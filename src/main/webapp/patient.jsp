@@ -1,4 +1,4 @@
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -9,7 +9,6 @@
 <body>
 <jsp:include page="/header.jsp"/>
 <div class="main">
-  <h2>Patients:</h2>
   <%
     String errorMessage = (String) request.getAttribute("errorMessage");
     if (errorMessage != null)
@@ -18,21 +17,28 @@
       <p style="color: red;"><%= errorMessage %></p>
   <%
     }
+    Map<String, String> patient = (Map<String, String>) request.getAttribute("patient");
+    if (patient != null)
+    {
   %>
-  <ul>
+  <h2><%= patient.get("FIRST") %> <%= patient.get("LAST") %></h2>
+  <table>
     <%
-      List<String[]> patients = (List<String[]>) request.getAttribute("patients");
-      if (patients != null)
+      for (Map.Entry<String, String> entry : patient.entrySet())
       {
-        for (String[] patient : patients)
-        {
     %>
-    <li><a href="patient?id=<%= patient[0] %>"><%= patient[1] %></a></li>
+    <tr>
+      <td><strong><%= entry.getKey() %></strong></td>
+      <td><%= entry.getValue() %></td>
+    </tr>
     <%
-        }
       }
     %>
-  </ul>
+  </table>
+  <%
+    }
+  %>
+  <p><a href="patientList">Back to patient list</a></p>
 </div>
 <jsp:include page="/footer.jsp"/>
 </body>

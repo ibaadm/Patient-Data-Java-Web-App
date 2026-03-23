@@ -10,17 +10,34 @@ import jakarta.servlet.http.HttpServletResponse;
 import uk.ac.ucl.model.ModelFactory;
 
 import java.io.IOException;
+import java.util.Map;
 
-@WebServlet("/patientList")
-public class ViewPatientListServlet extends HttpServlet
+@WebServlet("/patient")
+public class ViewPatientServlet extends HttpServlet
 {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
   {
     try
     {
-      request.setAttribute("patients", ModelFactory.getModel().getPatientList());
+      String id = request.getParameter("id");
+      if (id == null || id.trim().isEmpty())
+      {
+        request.setAttribute("errorMessage", "No patient ID provided.");
+      }
+      else
+      {
+        Map<String, String> patient = ModelFactory.getModel().getPatientById(id);
+        if (patient == null)
+        {
+          request.setAttribute("errorMessage", "Patient not found.");
+        }
+        else
+        {
+          request.setAttribute("patient", patient);
+        }
+      }
       ServletContext context = getServletContext();
-      RequestDispatcher dispatch = context.getRequestDispatcher("/patientList.jsp");
+      RequestDispatcher dispatch = context.getRequestDispatcher("/patient.jsp");
       dispatch.forward(request, response);
     }
     catch (IOException e)
