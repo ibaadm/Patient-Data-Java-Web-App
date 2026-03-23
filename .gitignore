@@ -7,6 +7,10 @@ war-file/
 *.iml
 out/
 
+# Runtime
+tomcat.8080/
+logfile.txt
+
 # OS
 .DS_Store
 Thumbs.db
