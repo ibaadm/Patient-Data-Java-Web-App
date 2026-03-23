@@ -49,8 +49,34 @@ public class Model
     return null;
   }
 
-  public List<String> searchFor(String keyword)
+  public List<String[]> searchFor(String keyword)
   {
-    return new ArrayList<>();
+    List<String[]> results = new ArrayList<>();
+    String[] terms = keyword.trim().toLowerCase().split("\\s+");
+    List<String> columnNames = dataFrame.getColumnNames();
+
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      for (String term : terms)
+      {
+        boolean matched = false;
+        for (String column : columnNames)
+        {
+          if (dataFrame.getValue(column, row).toLowerCase().contains(term))
+          {
+            matched = true;
+            break;
+          }
+        }
+        if (matched)
+        {
+          String id = dataFrame.getValue("ID", row);
+          String name = dataFrame.getValue("FIRST", row) + " " + dataFrame.getValue("LAST", row);
+          results.add(new String[]{id, name});
+          break;
+        }
+      }
+    }
+    return results;
   }
 }
