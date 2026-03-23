@@ -67,6 +67,11 @@ public class Model
     saveToCSV();
   }
 
+  public void saveToJSON(String outputFile)
+  {
+    new JSONWriter().write(dataFrame, outputFile);
+  }
+
   private void saveToCSV()
   {
     try (Writer writer = new FileWriter(fileName);

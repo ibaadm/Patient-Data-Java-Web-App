@@ -10,7 +10,19 @@
 <jsp:include page="/header.jsp"/>
 <div class="main">
   <h2>Patients:</h2>
-  <p><a href="addpatient">Add Patient</a></p>
+  <p>
+    <a href="addpatient">Add Patient</a>
+    &nbsp;|&nbsp;
+    <a href="savejson">Save as JSON</a>
+  </p>
+  <%
+    if ("json".equals(request.getParameter("saved")))
+    {
+  %>
+    <p style="color: green;">Data saved to data/patients.json</p>
+  <%
+    }
+  %>
   <%
     String errorMessage = (String) request.getAttribute("errorMessage");
     if (errorMessage != null)
