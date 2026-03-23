@@ -37,4 +37,9 @@ public class Column
   {
     rows.add(value);
   }
+
+  public void removeRowValue(int rowIndex)
+  {
+    rows.remove(rowIndex);
+  }
 }

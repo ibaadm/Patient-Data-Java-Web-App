@@ -36,6 +36,19 @@
     %>
   </table>
   <%
+    if (patient != null)
+    {
+  %>
+  <p>
+    <a href="editpatient?id=<%= patient.get("ID") %>">Edit</a>
+    &nbsp;
+    <form method="POST" action="deletepatient" style="display:inline;">
+      <input type="hidden" name="id" value="<%= patient.get("ID") %>"/>
+      <input type="submit" value="Delete"
+             onclick="return confirm('Delete this patient?');"/>
+    </form>
+  </p>
+  <%
     }
   %>
   <p><a href="patientList">Back to patient list</a></p>

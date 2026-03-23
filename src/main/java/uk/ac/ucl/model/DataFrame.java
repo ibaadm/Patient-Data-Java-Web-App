@@ -41,4 +41,12 @@ public class DataFrame
   {
     columns.get(columnName).addRowValue(value);
   }
+
+  public void removeRow(int rowIndex)
+  {
+    for (Column column : columns.values())
+    {
+      column.removeRowValue(rowIndex);
+    }
+  }
 }

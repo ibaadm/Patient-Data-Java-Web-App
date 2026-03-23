@@ -1,22 +1,93 @@
 package uk.ac.ucl.model;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Model
 {
+  private final String fileName;
   private final DataFrame dataFrame;
 
   public Model(String fileName)
   {
+    this.fileName = fileName;
     dataFrame = new DataLoader().load(fileName);
   }
 
-  public DataFrame getDataFrame()
+  public List<String> getColumnNames()
   {
-    return dataFrame;
+    return dataFrame.getColumnNames();
+  }
+
+  public void addPatient(Map<String, String> fields)
+  {
+    fields.put("ID", UUID.randomUUID().toString());
+    for (String column : dataFrame.getColumnNames())
+    {
+      dataFrame.addValue(column, fields.getOrDefault(column, ""));
+    }
+    saveToCSV();
+  }
+
+  public void updatePatient(String id, Map<String, String> fields)
+  {
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (id.equals(dataFrame.getValue("ID", row)))
+      {
+        for (String column : dataFrame.getColumnNames())
+        {
+          dataFrame.putValue(column, row, fields.getOrDefault(column, ""));
+        }
+        break;
+      }
+    }
+    saveToCSV();
+  }
+
+  public void deletePatient(String id)
+  {
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (id.equals(dataFrame.getValue("ID", row)))
+      {
+        dataFrame.removeRow(row);
+        break;
+      }
+    }
+    saveToCSV();
+  }
+
+  private void saveToCSV()
+  {
+    try (Writer writer = new FileWriter(fileName);
+         CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT))
+    {
+      List<String> columnNames = dataFrame.getColumnNames();
+      printer.printRecord(columnNames);
+      for (int row = 0; row < dataFrame.getRowCount(); row++)
+      {
+        List<String> rowData = new ArrayList<>();
+        for (String column : columnNames)
+        {
+          rowData.add(dataFrame.getValue(column, row));
+        }
+        printer.printRecord(rowData);
+      }
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
   }
 
   public List<String[]> getPatientList()
