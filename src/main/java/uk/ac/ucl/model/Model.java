@@ -49,6 +49,67 @@ public class Model
     return null;
   }
 
+  public int getPatientCount()
+  {
+    return dataFrame.getRowCount();
+  }
+
+  public String[] getOldestPatient()
+  {
+    String oldestId = null;
+    String oldestName = null;
+    String oldestBirthdate = null;
+
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      String birthdate = dataFrame.getValue("BIRTHDATE", row);
+      if (birthdate.isEmpty())
+      {
+        continue;
+      }
+      if (oldestBirthdate == null || birthdate.compareTo(oldestBirthdate) < 0)
+      {
+        oldestBirthdate = birthdate;
+        oldestId = dataFrame.getValue("ID", row);
+        oldestName = dataFrame.getValue("FIRST", row) + " " + dataFrame.getValue("LAST", row);
+      }
+    }
+    return new String[]{oldestId, oldestName, oldestBirthdate};
+  }
+
+  public int getDeceasedCount()
+  {
+    int count = 0;
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      if (!dataFrame.getValue("DEATHDATE", row).isEmpty())
+      {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public Map<String, Integer> getCountByColumn(String columnName)
+  {
+    Map<String, Integer> counts = new LinkedHashMap<>();
+    for (int row = 0; row < dataFrame.getRowCount(); row++)
+    {
+      String value = dataFrame.getValue(columnName, row);
+      counts.put(value, counts.getOrDefault(value, 0) + 1);
+    }
+
+    List<Map.Entry<String, Integer>> entries = new ArrayList<>(counts.entrySet());
+    entries.sort((a, b) -> b.getValue() - a.getValue());
+
+    Map<String, Integer> sorted = new LinkedHashMap<>();
+    for (Map.Entry<String, Integer> entry : entries)
+    {
+      sorted.put(entry.getKey(), entry.getValue());
+    }
+    return sorted;
+  }
+
   public List<String[]> searchFor(String keyword)
   {
     List<String[]> results = new ArrayList<>();
