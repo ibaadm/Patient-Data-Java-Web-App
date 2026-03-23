@@ -1,58 +1,54 @@
-# WebAppExample
+# Patient Manager
 
-A minimal Java web application intended for junior developers learning the basics of Java web apps, servlets, and JSPs. The app runs an embedded Tomcat server and serves static resources from `src/main/webapp`.
+A Java web application for viewing and managing patient data, built as part of the COMP0004 Object-Oriented Programming coursework at UCL. It runs an embedded Tomcat server and follows the MVC pattern using Java Servlets and JSPs.
 
-## Prerequisites
+## Features
 
-- Java 25 (as configured in `pom.xml`)
-- Maven 3.9+
+- Browse a full list of patients and view all details for any individual patient
+- Search across every field in the dataset by one or more keywords
+- Add, edit, and delete patient records, with changes saved back to the CSV file
+- Statistics page showing total patients, deceased count, oldest patient, gender breakdown, and patients per city
+- Charts page with age distribution, gender breakdown, and top 10 cities visualised using Chart.js
+- Export the full dataset to a JSON file via the web interface
+
+## Tech Stack
+
+- Java 25
+- Apache Tomcat 11 (embedded)
+- Jakarta Servlets and JSPs
+- Apache Commons CSV
+- Jackson Databind
+- Maven
+
+## Getting Started
+
+**Prerequisites:** Java 25 and Maven 3.9+
+
+**Run:**
+
+```bash
+mvn compile exec:java
+```
+
+Then open `http://localhost:8080` in your browser.
 
 ## Project Structure
 
-- `src/main/java` — Java source code (including the embedded Tomcat bootstrap in `uk.ac.ucl.main.Main`)
-- `src/main/webapp` — Static web resources and JSPs
-- `target` — Build output (created by Maven)
-- `war-file` — Packaged WAR output (created by Maven)
+```
+src/main/java/uk/ac/ucl/
+  main/        - embedded Tomcat entry point
+  model/       - Column, DataFrame, DataLoader, JSONWriter, Model, ModelFactory
+  servlets/    - one servlet per feature (list, search, stats, charts, CRUD, JSON export)
 
-## Compile
+src/main/webapp/
+  *.jsp        - views for each page
+  *.html       - static pages (home, search form)
+  styles.css
 
-Build the project and produce a WAR file:
-
-```bash
-mvn clean package
+data/
+  patients100.csv   - sample dataset (100 patients)
 ```
 
-This writes the WAR to `war-file/`.
+## Data
 
-## Run (Embedded Tomcat)
-
-First compile the project, then run the main class via Maven:
-
-```bash
-mvn clean compile exec:exec
-```
-
-By default the server starts on port `8080`. Open:
-
-```
-http://localhost:8080
-```
-
-## Configuration
-
-You can configure the server using system properties or environment variables:
-
-- `SERVER_PORT` — Port to bind (default: `8080`)
-- `WEBAPP_DIR` — Web resources directory (default: `src/main/webapp/`)
-- `CLASSES_DIR` — Compiled classes directory (default: `target/classes`)
-
-Example (using environment variables):
-
-```bash
-SERVER_PORT=9090 mvn clean compile exec:exec
-```
-
-## Notes for Learners
-
-- The entry point is `uk.ac.ucl.main.Main` in `src/main/java/uk/ac/ucl/main/Main.java`.
-- Packaging as a WAR is useful if you want to deploy to an external Tomcat later.
+The app loads patient data from `data/patients100.csv` on startup. The CSV format follows the synthetic dataset from [UCLComputerScience/COMP0004Data](https://github.com/UCLComputerScience/COMP0004Data), with columns including ID, name, address, gender, race, birthdate, and more.
